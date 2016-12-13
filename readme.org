@@ -1,0 +1,278 @@
+* Pratiquer le récursif
+
+Vous allez mettre en pratique l'écriture de fonctions récursives.
+
+** Créez un nouveau projet javascript
+
+Sous gitlab, créez un nouveau projet dans votre espace personnel. Appelez le par
+exemple =recurse=.
+
+Clonez ce projet vide sur votre poste personnel.
+
+Vous êtes prêt à commencer: utilisez =npm init= pour initialiser le fichier
+=package.json=, qui va décrire votre projet javascript.
+
+Répondez aux questions, et investiguez ensuite le contenu du fichier
+=package.json= généré.
+
+** Installez les dépendances de votre projet
+
+Nous allons utiliser =chai= pour écrire des assertions:
+
+#+BEGIN_SRC shell
+npm install --save-dev chai
+#+END_SRC
+
+** Créez un .gitignore
+
+Rajoutez =node_modules= dans le =.gitignore= de votre projet.
+
+** Commit initial
+
+Mettez en place l'arborescence de votre projet, en créant le répertoire =test=
+qui contiendra les tests unitaires.
+
+Créez le fichier =recurse.js= qui contiendra votre code.
+
+Créez le fichier =test/recurse-test.js= qui contiendra les tests unitaires.
+
+Rajoutez le code minimal:
+
+1. définition d'un module dans =recurse.js=
+2. utilisation de ce module dans =test/recurse-test.js=
+3. ajout d'un test unitaire, à tester avec =mocha=.
+
+Par exemple:
+
+#+BEGIN_SRC javascript
+describe('working config', () => {
+  it('has a sample test', () => {
+    expect(true).to.be.true
+  })
+})
+#+END_SRC
+
+
+Avant de commencer à coder, créer un premier commit git de votre projet, avec le
+commentaire =commit initial=.
+
+Votre environnement pour coder est maintenant opérationnel: au travail !
+
+** Exercice 1: length
+
+Commençons par quelque chose de basique: nous allons réimplémenter la fonction
+=sum=, qui retourne la somme des valeurs d'un tableau, de manière récursive.
+
+Le squelette de la fonction à écrire est:
+
+#+BEGIN_SRC javascript
+const sum = (a) => {
+}
+#+END_SRC
+
+Les fonctions récursives sur les tableaux les plus simples suivent le schéma
+suivant:
+
+1. traiter le cas du tableau vide, ou réduit à un seul élément: cas terminal.
+2. Pour les autres cas
+  - traiter la première case
+  - appeler récursivement la fonction sur le reste du tableau
+  - retourner un résultat en combinant les 2 précédents.
+
+Les tests unitaires associés vont illustrer les 2 cas, cas terminal et cas
+récursif.
+
+Commencez par spécifier le cas terminal dans le test.
+
+#+BEGIN_SRC javascript
+const rec = require('../recurse.js')
+const expect = require('chai').expect
+const sum = rec.sum
+
+describe('sum', () => {
+  it('returns 0 for an empty array', () => {
+    expect(sum([])).to.equal(0)
+  })
+})
+#+END_SRC
+
+Faites tourner le test unitaire avec =mocha=, avec pour le moment =recurse.js=
+contenant une implémentation vide:
+
+#+BEGIN_SRC javascript
+const sum = (a) => {
+  // terminal case : empty array
+  // if not: handle first element
+  // then combine with recursive call on the rest of the array
+  // rest = a.slice(1)
+}
+
+module.exports = {sum: sum}
+#+END_SRC
+
+Le résultat obtenu ressemble à:
+
+#+BEGIN_EXAMPLE
+ sum
+    1) returns 0 for an empty array
+
+
+  1 failing
+
+  1) sum returns 0 for an empty array:
+     AssertionError: expected undefined to equal 0
+#+END_EXAMPLE
+
+Votre code fonctionne, mais l'assertion détecte bien que le résultat n'est pas
+correct.
+
+On rajoute le code minimum pour que l'assertion passe:
+
+#+BEGIN_SRC javascript
+const sum = (a) => {
+  // terminal case : empty array
+  return 0
+  // if not: handle first element
+  // then combine with recursive call on the rest of the array
+  // rest = a.slice(1)
+}
+
+module.exports = {sum: sum}
+#+END_SRC
+
+Le résultat du test par =mocha= ressemble maintenant à:
+
+#+BEGIN_EXAMPLE
+  sum
+    ✓ returns 0 for an empty array
+
+
+  1 passing (8ms)
+#+END_EXAMPLE
+
+On continue, en appliquant toujours le cycle:
+
+1. spécification du nouveau cas sous forme d'un test unitaire
+2. appeler mocha, vérifier que le test tourne, et que l'assertion détecte bien
+   un cas d'erreur.
+3. rajouter le code minimal pour l'assertion précédente soit vérifiée, et que
+   les tests précédents continuent de passer
+
+La version finale est donc:
+#+BEGIN_SRC javascript
+const sum = (a) => {
+  // terminal case : empty array
+  if (a.length === 0)
+    return 0;
+  // if not: handle first element
+  // then combine with recursive call on the rest of the array
+  // rest = a.slice(1)
+  return a[0] + sum(a.slice(1))
+}
+
+module.exports = {sum: sum}
+#+END_SRC
+
+#+BEGIN_SRC javascript
+const rec = require('../recurse.js')
+const expect = require('chai').expect
+const sum = rec.sum
+
+describe('sum', () => {
+  it('returns 0 for an empty array', () => {
+    expect(sum([])).to.equal(0)
+  })
+
+  it('returns 12 for [1,5,6]', () =>{
+    expect(sum([1,5,6])).to.equal(12)
+  })
+
+})
+#+END_SRC
+
+** Exercice basique: map
+
+Réimplementez la fonction =map= sous la forme =map(a,f)= qui renvoie une copie
+du tableau =a=, dont les éléments ont été transformés en appelant =f=.
+
+** Exercice intermédiaire: first
+
+À vous de jouer: spécifiez avec des tests unitaires puis implémentez la fonction
+=first(a, f)= qui renvoie le premier élément =e= de =a= pour lequel =f(e)=
+renvoie =true=.
+
+Pensez à spécifier les cas à problème:
+- tableau vide
+- pas d'élément trouvé vérifiant =f=
+
+*** Variante
+
+Écrivez à partir de =first= la fonction =some(a, f)= qui renvoie =true= si un
+des élément de =a= vérifie =f=. 
+
+** Exercice avancé: reduce
+
+Réimplémentez la fonction =reduce= standard.
+
+** Intermède: Fonction récursive simple ou reduce ?
+
+La fonction =reduce= parcours systématiquement toutes les valeurs du tableau, en
+les traitant les unes après les autres, en combinant éventuellement avec le
+résultat de l'étape précédente.
+
+Réimplémentez =map= à partir de =reduce=.
+
+Écrire une application de =reduce= consiste à trouver la fonction de réduction
+=(x,y) => f(x,y)=. Pour cela, suivez le raisonnement suivant:
+
+1. Spécifier le cas terminal, soit le tableau vide =[]= soit un tableau réduit à
+   un seul élément. Cela vous donne le type de résultat renvoyé par =f=, ainsi
+   que le type de l'argument =x=, qui correspond au résultat accumulé par les
+   applications précédentes de =f=.
+2. Simuler sur un cas simple la réduction. Pour cela, écrivez sur une ligne la
+   valeur initiale (soit la première du tableau, soit la valeur spécifiée en cas
+   de tableau vide), puis les valeurs du tableau choisis pour votre exemple.
+   Combinez ces valeurs 2 à 2, déduisez-en le code de =f=.
+
+Exemple avec =map=:
+
+1. =map([], f) = []=, quelle que soit =f=.
+2. =map([1,2,3], (x) => x + 1)=. Les valeurs à combiner par la réduction sont :
+   =[] 1 2 3=. 
+
+La fonction de réduction est de la forme =comb(accu, e)= avec =accu= qui est un
+tableau (déduit grâce au cas de base), et =e= qui est un des éléments du tableau
+initial.
+
+Avec ~f = (x) => x + 1~: 
+
+- Combinaison 1 :: =comb([], 1)= doit retourner =[f(1)]=, soit =[2]=
+- Combinaison 2 :: =comb([2], 2)= doit retourner =[2, f(2)]=
+
+On voit rapidement que ~comb = (accu, e) => {accu.push(f(e)); return accu}~
+
+Le résultat final est donc:
+
+#+BEGIN_SRC javascript
+const map = (a, f) => a.reduce((accu, e) => {accu.push(f(e)); return accu}, [])
+#+END_SRC
+
+Spécifiez cette fonction par des tests unitaires.
+
+*** filter avec reduce
+
+Spécifiez et implémenter =filter= avec =reduce=.
+*** all avec reduce
+
+Spécifiez et implémentez la fonction =all(a, f)= qui renvoie =true= si tous les
+éléments =e= de =a= vérifient ~f(e) === true~. Utilisez =reduce= pour cela.
+
+*** first/some avec reduce
+
+Spécifiez et implémentez =first= ou =some= avec =reduce=.
+Vous devriez pouvoir recycler les tests précédents.
+
+Pourquoi cette implémentation n'est-elle pas préférable à la précédente ?
+
+Pensez en nombre d'opérations à effectuer.
+
