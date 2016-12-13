@@ -1,0 +1,23 @@
+{
+  "name": "recurse",
+  "version": "1.0.0",
+  "description": "exos de manip prog func et recurse",
+  "main": "recurse.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@gitlab.enseeiht.fr:tlecheva/recurse.git"
+  },
+  "keywords": [
+    "toto",
+    "titi"
+  ],
+  "author": "thomas <tlecheva@gmail.com>",
+  "license": "GPL-3.0",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0"
+  }
+}
